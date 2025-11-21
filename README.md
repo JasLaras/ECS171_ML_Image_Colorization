@@ -3,14 +3,23 @@
 ## Project Structure
 
 ```
-├── training/              # Model training code
-│   ├── model.py          # Model architecture: Link to colab notebook or something
+├── training/                      # Model training code
+│   ├── model.py                   # Model architecture (link to Colab notebook or training workflow)
 │
-└── web_app/              # Web application
-    ├── backend/          # Flask API
-    │   ├── app.py        # API endpoints
-    │   └── requirements.txt
-    └── frontend/         # Web UI
+└── web_app/                       # Web application
+    ├── backend/                   # Flask API
+    │   ├── app.py                 # API endpoints for image upload + model inference
+    │   └── requirements.txt       # Python dependencies for backend
+    │
+    └── frontend/                  # Web UI
+        ├── project.html           # Landing page with project selection bubbles
+        ├── image-upload.html      # Image recolorization upload page (grayscale → RGB)
+        ├── model.html             # Page with notes on model design and architecture explanation
+        ├── report.html            # Page for final research report
+        ├── style.css              # Shared styling 
+        ├── image-upload.css       # Styling specific to image-upload page (upload box behavior, layout)
+        ├── upload.js              # Handles file preview + sending images to backend
+        ├── script.js              # General UI interaction logic for project.html 
 ```
 
 ## Architecture
