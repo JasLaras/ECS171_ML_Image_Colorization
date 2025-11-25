@@ -35,7 +35,7 @@ uploadBubble.addEventListener('mouseleave', () => {
 });
 
 // Click to open file picker
-uploadBubble.addEventListener('click', () => fileInput.click());
+// uploadBubble.addEventListener('click', () => fileInput.click());
 
 // Drag & drop handling
 uploadBubble.addEventListener('dragover', e => {
@@ -57,7 +57,7 @@ uploadBubble.addEventListener('drop', e => {
     selectedFile = files[0];
     console.log('File dropped:', selectedFile.name);
     // Auto-submit form on drop
-    form.dispatchEvent(new Event('submit'));
+    form.dispatchEvent(new Event('submit', {cancelable: true, bubbles: true}));
   }
 });
 
@@ -66,7 +66,7 @@ fileInput.addEventListener('change', () => {
   if (fileInput.files.length > 0) {
     selectedFile = fileInput.files[0];
     console.log('File selected:', selectedFile.name);
-    form.dispatchEvent(new Event('submit'));
+    form.dispatchEvent(new Event('submit', {cancelable: true, bubbles: true}));
   }
 });
 
@@ -111,8 +111,13 @@ loadModels();
 // Handle form submit
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
+  
   const file = fileInput.files[0];
   if (!file) return;
+
+  // Show original uploaded image
+  const uploadedPreview = document.getElementById('uploaded-preview');
+  uploadedPreview.src = URL.createObjectURL(file);
 
   // Show loading
   loadingDiv.style.display = 'block';
@@ -132,7 +137,7 @@ form.addEventListener('submit', async (e) => {
   }
   checkboxes.forEach(cb => formData.append('models', cb.value));
 
-  try {
+  try {    
     const response = await fetch('/colorize', {
       method: 'POST',
       body: formData

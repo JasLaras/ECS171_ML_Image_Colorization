@@ -19,11 +19,12 @@
     <h1>Image Colorization Upload</h1>
     <div class="upload-layout">
       <form id="upload-form" data-model-width="128" data-model-height="128">
-      <label class="upload-bubble" id="upload-bubble">
-        <p>Click or Drag & Drop a Grayscale Image Here</p>
-        <input type="file" id="image-input" accept="image/*">
-      </label>
-    </form>
+        <button type="submit" hidden></button>
+        <label class="upload-bubble" id="upload-bubble">
+          <p>Click or Drag & Drop a Grayscale Image Here</p>
+          <input type="file" id="image-input" accept="image/*">
+        </label>
+      </form>
 
     <div class="right-panel">
       <!-- Model selection -->
@@ -34,7 +35,7 @@
       <div class="instructions">
         <p><strong>Instructions:</strong></p>
         <ul>
-          <li>Best results: images of flowers or trees!</li>
+          <li>Best results: vehicles, animals, or nature!</li>
         </ul>
       </div>
     </div>
@@ -49,7 +50,11 @@
     <!-- Result: show original and colorized side-by-side -->
     <div id="result" class="result-grid" style="display:none;">
       <div class="result-panel">
-        <h2>Original (Model Input)</h2>
+        <h2>Color (Uploaded Image)</h2>
+        <img id="uploaded-preview" class="original-image" alt="Uploaded">
+      </div>
+      <div class="result-panel">
+        <h2>Grayscale (Model Input)</h2>
         <img id="original-preview" class="original-image" alt="Original preview">
       </div>
       <div class="result-panel">

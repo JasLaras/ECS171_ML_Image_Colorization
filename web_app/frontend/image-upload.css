@@ -314,3 +314,10 @@ h1 {
   height: 18px;
   accent-color: #555;
 }
+
+.result-panel img {
+  max-width: 100%;
+  max-height: 350px;
+  object-fit: contain;
+  border-radius: 8px;
+}
