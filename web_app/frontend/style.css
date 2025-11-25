@@ -94,7 +94,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   width: 600px;
-  height: 250px;
+  height: 270px;
   background: url('scrap_paper.png') no-repeat center;
   background-size: contain;
   pointer-events: none;
