@@ -186,15 +186,6 @@ h1 {
   transition: width 0.1s linear;
 }
 
-.result-image {
-  width: 100%;
-  height: auto;
-  margin-top: 15px;
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-  display: block;
-}
-
 #result {
   text-align: center;
   margin-top: 40px;
@@ -206,38 +197,61 @@ h1 {
   color: #111;
   margin-bottom: 15px;
 }
-
-/* Result grid: two panels side-by-side */
+/* Result grid: ORIGINAL on top, RESULTS below */
 .result-grid {
   display: flex;
+  flex-direction: column;   /* original first, results second */
   gap: 24px;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
   width: 100%;
+  align-items: center;
   box-sizing: border-box;
 }
 
+/* The white card panels */
 .result-panel {
-  width: 48%;
-  min-width: 260px;
-  max-width: 400px;
+  width: 100%;
+  max-width: 900px;        /* keeps layout nice on desktops */
   background: #fff;
-  padding: 16px;
+  padding: 20px;
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.06);
   text-align: center;
 }
 
+.result-image
 .original-image {
   width: 100%;
+  max-width: 260px;
   height: auto;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-top: 15px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
   display: block;
 }
 
+/* RESULTS: horizontal grid */
+.results-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+/* Result card */
+.result-item {
+  background: #fafafa;
+  padding: 14px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.result-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+/* Smaller screens */
 @media (max-width: 780px) {
   .result-panel { width: 100%; }
-  .upload-bubble { width: 260px; height: 260px; }
 }

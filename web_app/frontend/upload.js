@@ -73,46 +73,40 @@ fileInput.addEventListener('change', () => {
 // Keep track of created object URLs to revoke them
 let originalURL = null;
 let colorizedURL = null;
+let modelsList = document.getElementById('models-list');
 
-// Async version that calls a callback when done (doesn't show result area)
-function setPreprocessedPreviewAsync(file, targetW, targetH, callback) {
-  if (!file) { callback(); return; }
-  if (originalURL && originalURL.startsWith('blob:')) {
-    try { URL.revokeObjectURL(originalURL); } catch (e) {}
-    originalURL = null;
+// Fetch available models from backend and render checkboxes
+async function loadModels() {
+  try {
+    const resp = await fetch('/models');
+    if (!resp.ok) throw new Error('Failed to fetch models');
+    const data = await resp.json();
+    modelsList.innerHTML = '';
+    data.models.forEach(m => {
+      const id = 'model_' + m.name.replace(/[^a-z0-9]/gi, '_');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'model-checkbox';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.id = id;
+      cb.name = 'models';
+      cb.value = m.name;
+      // auto-check loaded models by default
+      if (m.loaded) cb.checked = true;
+      const label = document.createElement('label');
+      label.htmlFor = id;
+      label.textContent = m.name + (m.loaded ? '' : ' (failed to load)');
+      wrapper.appendChild(cb);
+      wrapper.appendChild(label);
+      modelsList.appendChild(wrapper);
+    });
+  } catch (e) {
+    modelsList.textContent = 'Could not load models';
+    console.error(e);
   }
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = targetW;
-      canvas.height = targetH;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, targetW, targetH);
-      try {
-        const imageData = ctx.getImageData(0, 0, targetW, targetH);
-        const data = imageData.data;
-        for (let i = 0; i < data.length; i += 4) {
-          const r = data[i];
-          const g = data[i + 1];
-          const b = data[i + 2];
-          const y = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-          data[i] = data[i + 1] = data[i + 2] = y;
-        }
-        ctx.putImageData(imageData, 0, 0);
-      } catch (e) {
-        console.warn('Could not convert to grayscale in canvas:', e);
-      }
-      const dataUrl = canvas.toDataURL('image/png');
-      originalURL = dataUrl;
-      originalPreview.src = dataUrl;
-      callback(); // signal done, don't show result area here
-    };
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
 }
+
+loadModels();
 
 // Handle form submit
 form.addEventListener('submit', async (e) => {
@@ -129,6 +123,14 @@ form.addEventListener('submit', async (e) => {
 
   const formData = new FormData();
   formData.append('image', file);
+  // Gather checked model names and append as repeated 'models' fields
+  const checkboxes = document.querySelectorAll('#models-list input[type=checkbox]:checked');
+  if (checkboxes.length === 0) {
+    alert('Please select at least one model to run.');
+    loadingDiv.style.display = 'none';
+    return;
+  }
+  checkboxes.forEach(cb => formData.append('models', cb.value));
 
   try {
     const response = await fetch('/colorize', {
@@ -138,47 +140,37 @@ form.addEventListener('submit', async (e) => {
 
     if (!response.ok) throw new Error('Upload failed');
 
-    // Simulate loading bar for demo purposes
-    let width = 0;
-    const interval = setInterval(() => {
-      if (width >= 100) clearInterval(interval);
-      width += 5; 
-      loadingProgress.style.width = width + '%';
-    }, 100);
+    // Response is JSON with data-URIs
+    const data = await response.json();
+    // Hide loading
+    loadingDiv.style.display = 'none';
 
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
+    // Set original preview (model input grayscale returned by server)
+    if (data.original) {
+      originalPreview.src = data.original;
+    }
 
-    // Create Image from blob to learn its intrinsic dimensions
-    const colorImg = new Image();
-    const blobUrl = url; // will be revoked later
-    colorImg.onload = () => {
-      const w = colorImg.naturalWidth;
-      const h = colorImg.naturalHeight;
+    // Clear previous results
+    const resultsList = document.getElementById('results-list');
+    resultsList.innerHTML = '';
 
-      // regenerate the original preview resized+grayscaled to match returned image size
-      // Use async version with callback to ensure both previews are set before showing result area
-      const srcFile = selectedFile || file;
-      setPreprocessedPreviewAsync(srcFile, w, h, () => {
-        setTimeout(() => { // wait for loading bar animation
-          loadingDiv.style.display = 'none';
-          // set colorized preview src
-          if (colorizedURL) {
-            URL.revokeObjectURL(colorizedURL);
-            colorizedURL = null;
-          }
-          colorizedURL = blobUrl;
-          colorizedPreview.src = blobUrl;
-          // now show the result area with both previews ready
-          resultDiv.style.display = 'flex';
-          // revoke the URL after image loads to free memory
-          colorizedPreview.onload = () => {
-            try { URL.revokeObjectURL(blobUrl); } catch (e) {}
-          };
-        }, 2100); // match total progress duration
-      });
-    };
-    colorImg.src = url;
+    (data.results || []).forEach(r => {
+      const panel = document.createElement('div');
+      panel.className = 'result-item';
+      const title = document.createElement('div');
+      title.className = 'result-title';
+      title.textContent = r.name;
+      const img = document.createElement('img');
+      img.className = 'result-image';
+      img.alt = r.name;
+      img.src = r.image_b64;
+      panel.appendChild(title);
+      panel.appendChild(img);
+      resultsList.appendChild(panel);
+    });
+
+    // Show results container
+    resultDiv.style.display = 'flex';
 
   } catch (err) {
     console.error(err);

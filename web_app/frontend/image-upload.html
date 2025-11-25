@@ -25,6 +25,12 @@
       </label>
     </form>
 
+    <!-- Model selection -->
+    <div class="model-selection" id="model-selection">
+      <p><strong>Select Models:</strong></p>
+      <div id="models-list">Loading available models...</div>
+    </div>
+
     <div class="instructions">
       <p><strong>Instructions:</strong></p>
       <ul>
@@ -41,12 +47,14 @@
     <!-- Result: show original and colorized side-by-side -->
     <div id="result" class="result-grid" style="display:none;">
       <div class="result-panel">
-        <h2>Original</h2>
+        <h2>Original (Model Input)</h2>
         <img id="original-preview" class="original-image" alt="Original preview">
       </div>
       <div class="result-panel">
-        <h2>Colorized Image</h2>
-        <img id="colorized-preview" class="result-image" alt="Colorized preview">
+        <h2>Colorized Outputs</h2>
+        <div id="results-list" class="results-list">
+          <!-- JS will populate one panel per selected model -->
+        </div>
       </div>
     </div>
   </div>
