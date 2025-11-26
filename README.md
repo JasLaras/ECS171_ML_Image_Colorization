@@ -41,7 +41,7 @@ TLDR: We built a CNN regressor model that converts grayscale images into color!
 ## Architecture
 
 **Training** (`/training`):
-- Develop and train the [colorization model](training/model.ipynb)
+- Develop and train the colorization model: training/model.ipynb
 - Save trained model as `.pth` file (to be used by backend)
 - To run: Open model.ipynb, install dependencies, run cell by cell in Python 3.
     - Training cell: Uncomment lines to pick which model and dataset to train.
