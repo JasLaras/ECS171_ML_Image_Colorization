@@ -9,11 +9,11 @@ TLDR: We built a CNN regressor model that converts grayscale images into color!
 - To see our model in action, look below for instructions to run our code!
 
 
-![alt text](image.png)
+![alt text](upload_screenshot.png)
 
-![alt text](image-1.png)
+![alt text](input_screenshot.png)
 
-![alt text](image-2.png)
+![alt text](outputs_screenshot.png)
 
 ## Project Structure
 
