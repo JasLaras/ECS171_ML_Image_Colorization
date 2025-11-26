@@ -4,11 +4,12 @@
 
 ```
 ├── training/                      # Model training code
-│   ├── model.py                   # Model architecture (link to Colab notebook or training workflow)
+│   ├── model.py                   # Jupyter notebook with model architecture + training code. Saves model as .pth file
 │
 └── web_app/                       # Web application
     ├── backend/                   # Flask API
     │   ├── app.py                 # API endpoints for image upload + model inference
+    │   ├── model.py               # Utility functions for loading model from downloaded .pth files + image processing
     │   └── requirements.txt       # Python dependencies for backend
     │
     └── frontend/                  # Web UI
@@ -26,21 +27,27 @@
 
 **Training** (`/training`):
 - Develop and train the colorization model
-- Save trained model to Hugging Face Hub
+- Save trained model as `.pth` file (to be used by backend)
 
 **Backend** (`/web_app/backend`):
-- Flask API that loads model from Hugging Face
-- `/predict` endpoint: accepts image → returns colorized image
+- Flask API that loads model from `.pth` files on startup
+- `/colourize` endpoint: accepts image → returns colorized image
 - Model loaded once on startup, persists in memory
+- To run:
+  ```bash
+  cd web_app/backend
+  pip install -r requirements.txt
+  python app.py
+  ```
 
 **Frontend** (`/web_app/frontend`):
 - Web UI for uploading grayscale images
-- Calls backend `/predict` endpoint
+- Calls backend `/colourize` endpoint
 - Displays colorized results
 
 ## Key Design Notes
 
 - **Single Git Repo**: Training code and web app are in the same repository
-- **Model Storage**: Trained model is uploaded to Hugging Face Model Hub
-- **No Retraining**: Backend downloads model once and keeps it in memory
+- **Model Storage**: Model is trained using google colab, saved as `.pth` file, and loaded by backend
+- **No Retraining**: Backend loads model once on startup and keeps it in memory
 - **Scalable**: Model persists across requests, no redundant loading
