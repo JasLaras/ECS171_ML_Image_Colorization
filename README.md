@@ -1,5 +1,20 @@
 # Image Colorization - ML Project
 
+TLDR: We built a CNN regressor model that converts grayscale images into color!
+
+- For an intro to our project please check out our [presentation](Presentation_Slides.pdf)!
+
+- For an in depth look, check out our [written report](Written_Report.pdf)!
+
+- To see our model in action, look below for instructions to run our code!
+
+
+![alt text](upload_screenshot.png)
+
+![alt text](input_screenshot.png)
+
+![alt text](outputs_screenshot.png)
+
 ## Project Structure
 
 ```
@@ -26,7 +41,7 @@
 ## Architecture
 
 **Training** (`/training`):
-- Develop and train the colorization model
+- Develop and train the colorization model: training/model.ipynb
 - Save trained model as `.pth` file (to be used by backend)
 - To run: Open model.ipynb, install dependencies, run cell by cell in Python 3.
     - Training cell: Uncomment lines to pick which model and dataset to train.
@@ -47,6 +62,7 @@
 - Web UI for uploading grayscale images
 - Calls backend `/colourize` endpoint
 - Displays colorized results
+- To run: We run our app from our backend dir, so look above to see our app in action
 
 ## Key Design Notes
 
